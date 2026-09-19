@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Environment — never commit secrets
+.env
+.env.local
+.env.production
+
+# Build output
+client/dist/
+client/build/
+
+# Runtime data — exclude all runs except the demo seed
+data/runs/*.json
+!data/runs/demo.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Editor artifacts
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Distribution zip (re-generate with zip-project.js)
+nextest.zip

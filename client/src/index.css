@@ -1,0 +1,203 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   DARK THEME — default
+   ============================================================ */
+:root,
+.theme-dark {
+  color-scheme: dark;
+
+  --tw-bg:      10 10 15;
+  --tw-surface: 16 16 24;
+  --tw-border:  38 38 56;
+  --tw-cyan:    99 179 237;
+  --tw-green:   72 199 142;
+  --tw-red:     252 100 100;
+  --tw-amber:   251 191 36;
+  --tw-muted:   113 113 140;
+  --tw-purple:  167 139 250;
+
+  --color-bg:      #0A0A0F;
+  --color-surface: #101018;
+  --color-border:  #262638;
+  --color-text:    #E8E8F0;
+  --color-muted:   #71718C;
+  --color-cyan:    #63B3ED;
+  --color-green:   #48C78E;
+  --color-red:     #FC6464;
+  --color-amber:   #FBB724;
+  --color-purple:  #A78BFA;
+
+  --json-key:     #93C5FD;
+  --json-string:  #86EFAC;
+  --json-number:  #FDE68A;
+  --json-boolean: #F9A8D4;
+  --json-null:    #71718C;
+
+  --scrollbar-track: #101018;
+  --scrollbar-thumb: #262638;
+  --scrollbar-hover: #3A3A52;
+
+  /* Glass / glow tokens */
+  --glow-cyan:  0 0 20px rgb(99 179 237 / 0.15);
+  --glow-sm:    0 0 8px  rgb(99 179 237 / 0.25);
+}
+
+/* ============================================================
+   LIGHT THEME
+   ============================================================ */
+.theme-light {
+  color-scheme: light;
+
+  --tw-bg:      245 245 252;
+  --tw-surface: 255 255 255;
+  --tw-border:  218 218 232;
+  --tw-cyan:    37 99 235;
+  --tw-green:   22 163 74;
+  --tw-red:     220 38 38;
+  --tw-amber:   202 138 4;
+  --tw-muted:   100 100 125;
+  --tw-purple:  124 58 237;
+
+  --color-bg:      #F5F5FC;
+  --color-surface: #FFFFFF;
+  --color-border:  #DADAE8;
+  --color-text:    #1A1A2E;
+  --color-muted:   #64647D;
+  --color-cyan:    #2563EB;
+  --color-green:   #16A34A;
+  --color-red:     #DC2626;
+  --color-amber:   #CA8A04;
+  --color-purple:  #7C3AED;
+
+  --json-key:     #1D4ED8;
+  --json-string:  #166534;
+  --json-number:  #92400E;
+  --json-boolean: #9D174D;
+  --json-null:    #64647D;
+
+  --scrollbar-track: #F5F5FC;
+  --scrollbar-thumb: #DADAE8;
+  --scrollbar-hover: #C4C4D8;
+
+  --glow-cyan:  none;
+  --glow-sm:    none;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* text-white maps to theme primary text */
+.text-white { color: var(--color-text) !important; }
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }
+
+/* ============================================================
+   GLASS CARD
+   ============================================================ */
+.glass {
+  background: rgb(var(--tw-surface) / 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgb(var(--tw-border) / 0.6);
+}
+
+.glass-strong {
+  background: rgb(var(--tw-surface) / 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgb(var(--tw-cyan) / 0.15);
+}
+
+/* ============================================================
+   GRADIENT ACCENTS
+   ============================================================ */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-cyan), var(--color-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-border {
+  background: linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+              linear-gradient(135deg, var(--color-cyan), var(--color-purple)) border-box;
+  border: 1px solid transparent;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(var(--tw-cyan) / 0.3); }
+  50%       { box-shadow: 0 0 0 5px rgb(var(--tw-cyan) / 0); }
+}
+.pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, rgb(var(--tw-border)) 25%, rgb(var(--tw-surface)) 50%, rgb(var(--tw-border)) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fade-in 0.25s ease forwards; }
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.slide-up { animation: slide-up 0.3s ease forwards; }
+
+/* ============================================================
+   LOG PANEL
+   ============================================================ */
+.log-panel {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 11.5px;
+  line-height: 1.65;
+}
+
+/* ============================================================
+   JSON VIEWER
+   ============================================================ */
+.json-key     { color: var(--json-key); }
+.json-string  { color: var(--json-string); }
+.json-number  { color: var(--json-number); }
+.json-boolean { color: var(--json-boolean); }
+.json-null    { color: var(--json-null); }
+
+/* ============================================================
+   STEP CONNECTOR LINE (used in pipeline progress)
+   ============================================================ */
+.step-connector {
+  background: linear-gradient(90deg, rgb(var(--tw-cyan) / 0.4), rgb(var(--tw-purple) / 0.4));
+}

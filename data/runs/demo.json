@@ -1,0 +1,522 @@
+{
+  "runId": "run-demo1234",
+  "createdAt": "2025-01-15T10:30:00.000Z",
+  "requirementsText": "User Management API:\n- POST /users \u2014 Create a new user with email, name, and password. Returns 201 with user object.\n- GET /users/:id \u2014 Get user by ID. Returns 200 with user or 404 if not found.\n- PUT /users/:id \u2014 Update user profile. Returns 200 with updated user.\n- DELETE /users/:id \u2014 Delete user. Returns 204. Requires admin role.\n- GET /users \u2014 List all users. Supports pagination with page and limit query params.",
+  "baseUrl": "https://api.example.com",
+  "dryRun": true,
+  "status": "complete",
+  "llmProvider": {
+    "key": "anthropic",
+    "displayName": "Anthropic Claude",
+    "model": "claude-sonnet-4-20250514"
+  },
+  "stepDurations": {
+    "step1": 2341,
+    "step2": 3102,
+    "step3": 2876,
+    "step5": 4221,
+    "step6": 1543
+  },
+  "totalTests": 12,
+  "passed": 8,
+  "failed": 3,
+  "warnings": 1,
+  "skipped": 0,
+  "passRate": 73,
+  "duration": 14083,
+  "errors": [],
+  "requirements": [
+    {
+      "endpoint": "/users",
+      "method": "POST",
+      "description": "Create a new user account",
+      "requestFields": [
+        {
+          "name": "email",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "password",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "expectedSuccess": {
+        "statusCode": 201,
+        "description": "Returns created user object with id, email, name, createdAt"
+      },
+      "authRequired": false,
+      "businessRules": [
+        "Email must be unique",
+        "Password must be at least 8 characters"
+      ]
+    },
+    {
+      "endpoint": "/users/:id",
+      "method": "GET",
+      "description": "Retrieve a user by their ID",
+      "requestFields": [],
+      "expectedSuccess": {
+        "statusCode": 200,
+        "description": "Returns user object"
+      },
+      "authRequired": false,
+      "businessRules": [
+        "Returns 404 if user does not exist"
+      ]
+    },
+    {
+      "endpoint": "/users/:id",
+      "method": "PUT",
+      "description": "Update user profile fields",
+      "requestFields": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "email",
+          "type": "string",
+          "required": false
+        }
+      ],
+      "expectedSuccess": {
+        "statusCode": 200,
+        "description": "Returns updated user object"
+      },
+      "authRequired": true,
+      "businessRules": []
+    },
+    {
+      "endpoint": "/users/:id",
+      "method": "DELETE",
+      "description": "Delete a user account",
+      "requestFields": [],
+      "expectedSuccess": {
+        "statusCode": 204,
+        "description": "Empty response on success"
+      },
+      "authRequired": true,
+      "businessRules": [
+        "Requires admin role"
+      ]
+    }
+  ],
+  "testCases": [
+    {
+      "id": "tc-001",
+      "name": "Create user with valid data",
+      "endpoint": "/users",
+      "method": "POST",
+      "category": "happy_path",
+      "description": "POST with all required fields should create user and return 201",
+      "expectedStatusCode": 201,
+      "expectedBehavior": "Returns user object with generated ID, email, name, and createdAt timestamp",
+      "request": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "pathParams": {},
+        "request_body": {
+          "email": "john.doe@example.com",
+          "name": "John Doe",
+          "password": "SecurePass123!"
+        },
+        "query_params": null
+      },
+      "actualResponse": {
+        "skipped": true,
+        "durationMs": 0,
+        "actualUrl": "https://api.example.com/users"
+      },
+      "verdict": {
+        "result": "pass",
+        "analysis": "Test was skipped in dry-run mode. Based on the payload structure and API design, this test case is well-formed and should pass against a real endpoint.",
+        "issues": [],
+        "suggestions": []
+      }
+    },
+    {
+      "id": "tc-002",
+      "name": "Create user with missing email",
+      "endpoint": "/users",
+      "method": "POST",
+      "category": "negative",
+      "description": "POST without email field should return 400/422",
+      "expectedStatusCode": 400,
+      "expectedBehavior": "Returns error response indicating email is required",
+      "request": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "pathParams": {},
+        "request_body": {
+          "name": "John Doe",
+          "password": "SecurePass123!"
+        },
+        "query_params": null
+      },
+      "actualResponse": {
+        "skipped": true,
+        "durationMs": 0,
+        "actualUrl": "https://api.example.com/users"
+      },
+      "verdict": {
+        "result": "pass",
+        "analysis": "Dry run skipped. Negative test correctly omits required email field.",
+        "issues": [],
+        "suggestions": []
+      }
+    },
+    {
+      "id": "tc-003",
+      "name": "Create user with duplicate email",
+      "endpoint": "/users",
+      "method": "POST",
+      "category": "negative",
+      "description": "POST with existing email should return 409 conflict",
+      "expectedStatusCode": 409,
+      "expectedBehavior": "Returns conflict error indicating email is already taken",
+      "request": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "pathParams": {},
+        "request_body": {
+          "email": "existing@example.com",
+          "name": "Duplicate User",
+          "password": "password123"
+        },
+        "query_params": null
+      },
+      "actualResponse": {
+        "skipped": true,
+        "durationMs": 0,
+        "actualUrl": "https://api.example.com/users"
+      },
+      "verdict": {
+        "result": "fail",
+        "analysis": "Cannot verify conflict detection in dry-run mode. The test design is correct but requires execution against a seeded database.",
+        "issues": [
+          "Cannot verify conflict detection without real API execution"
+        ],
+        "suggestions": [
+          "Seed test database with an existing user before running this test",
+          "Run in non-dry-run mode to validate conflict handling"
+        ]
+      }
+    },
+    {
+      "id": "tc-004",
+      "name": "Get user by valid ID",
+      "endpoint": "/users/:id",
+      "method": "GET",
+      "category": "happy_path",
+      "description": "GET with a valid user ID should return 200 with user object",
+      "expectedStatusCode": 200,
+      "expectedBehavior": "Returns user object with id, email, name, createdAt",
+      "request": {
+        "headers": {},
+        "pathParams": {
+          "id": "user-abc123"
+        },
+        "request_body": null,
+        "query_params": null
+      },
+      "actualResponse": {
+        "skipped": true,
+        "durationMs": 0,
+        "actualUrl": "https://api.example.com/users/:id"
+      },
+      "verdict": {
+        "result": "pass",
+        "analysis": "Test is well-structured with a realistic path parameter. Should succeed against a populated database.",
+        "issues": [],
+        "suggestions": []
+      }
+    },
+    {
+      "id": "tc-005",
+      "name": "Get user with non-existent ID",
+      "endpoint": "/users/:id",
+      "method": "GET",
+      "category": "negative",
+      "description": "GET with an ID that does not exist should return 404",
+      "expectedStatusCode": 404,
+      "expectedBehavior": "Returns 404 with error message indicating user not found",
+      "request": {
+        "headers": {},
+        "pathParams": {
+          "id": "nonexistent-99999"
+        },
+        "request_body": null,
+        "query_params": null
+      },
+      "actualResponse": {
+        "skipped": true,
+        "durationMs": 0,
+        "actualUrl": "https://api.example.com/users/:id"
+      },
+      "verdict": {
+        "result": "pass",
+        "analysis": "Correctly tests 404 behavior with a clearly non-existent ID.",
+        "issues": [],
+        "suggestions": []
+      }
+    },
+    {
+      "id": "tc-006",
+      "name": "Update user without authorization",
+      "endpoint": "/users/:id",
+      "method": "PUT",
+      "category": "auth",
+      "description": "PUT without a valid auth token should return 401/403",
+      "expectedStatusCode": 401,
+      "expectedBehavior": "Returns unauthorized error",
+      "request": {
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer invalid-token-12345"
+        },
+        "pathParams": {
+          "id": "user-abc123"
+        },
+        "request_body": {
+          "name": "Updated Name"
+        },
+        "query_params": null
+      },
+      "actualResponse": {
+        "skipped": true,
+        "durationMs": 0,
+        "actualUrl": "https://api.example.com/users/:id"
+      },
+      "verdict": {
+        "result": "pass",
+        "analysis": "Auth test correctly uses an invalid token. Should return 401 from a properly implemented endpoint.",
+        "issues": [],
+        "suggestions": []
+      }
+    },
+    {
+      "id": "tc-007",
+      "name": "Delete user without admin role",
+      "endpoint": "/users/:id",
+      "method": "DELETE",
+      "category": "auth",
+      "description": "DELETE without admin role should return 403 forbidden",
+      "expectedStatusCode": 403,
+      "expectedBehavior": "Returns forbidden error indicating admin role required",
+      "request": {
+        "headers": {
+          "Authorization": "Bearer regular-user-token-12345"
+        },
+        "pathParams": {
+          "id": "user-abc123"
+        },
+        "request_body": null,
+        "query_params": null
+      },
+      "actualResponse": {
+        "skipped": true,
+        "durationMs": 0,
+        "actualUrl": "https://api.example.com/users/:id"
+      },
+      "verdict": {
+        "result": "fail",
+        "analysis": "Cannot fully validate role-based access control without a real token representing a non-admin user.",
+        "issues": [
+          "Role distinction cannot be tested in dry-run mode"
+        ],
+        "suggestions": [
+          "Use a real non-admin JWT token when running against live API",
+          "Set up test users with different roles in your test environment"
+        ]
+      }
+    },
+    {
+      "id": "tc-008",
+      "name": "Create user with invalid email format",
+      "endpoint": "/users",
+      "method": "POST",
+      "category": "edge_case",
+      "description": "POST with malformed email should return 400",
+      "expectedStatusCode": 400,
+      "expectedBehavior": "Returns validation error for invalid email format",
+      "request": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "pathParams": {},
+        "request_body": {
+          "email": "not-an-email",
+          "name": "Test User",
+          "password": "password123"
+        },
+        "query_params": null
+      },
+      "actualResponse": {
+        "skipped": true,
+        "durationMs": 0,
+        "actualUrl": "https://api.example.com/users"
+      },
+      "verdict": {
+        "result": "pass",
+        "analysis": "Good edge case testing email format validation.",
+        "issues": [],
+        "suggestions": []
+      }
+    },
+    {
+      "id": "tc-009",
+      "name": "Create user with empty password",
+      "endpoint": "/users",
+      "method": "POST",
+      "category": "edge_case",
+      "description": "POST with empty string password should return 400",
+      "expectedStatusCode": 400,
+      "expectedBehavior": "Returns validation error indicating password is too short",
+      "request": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "pathParams": {},
+        "request_body": {
+          "email": "test@example.com",
+          "name": "Test User",
+          "password": ""
+        },
+        "query_params": null
+      },
+      "actualResponse": {
+        "skipped": true,
+        "durationMs": 0,
+        "actualUrl": "https://api.example.com/users"
+      },
+      "verdict": {
+        "result": "pass",
+        "analysis": "Tests empty password validation. Most APIs return 400 for empty required string fields.",
+        "issues": [],
+        "suggestions": []
+      }
+    },
+    {
+      "id": "tc-010",
+      "name": "List users with pagination",
+      "endpoint": "/users",
+      "method": "GET",
+      "category": "happy_path",
+      "description": "GET /users with page and limit params should return paginated results",
+      "expectedStatusCode": 200,
+      "expectedBehavior": "Returns array of users with pagination metadata (total, page, limit)",
+      "request": {
+        "headers": {},
+        "pathParams": {},
+        "request_body": null,
+        "query_params": {
+          "page": 1,
+          "limit": 10
+        }
+      },
+      "actualResponse": {
+        "skipped": true,
+        "durationMs": 0,
+        "actualUrl": "https://api.example.com/users"
+      },
+      "verdict": {
+        "result": "warning",
+        "analysis": "Pagination parameters are correct but cannot verify response shape (pagination envelope vs flat array) without execution.",
+        "issues": [
+          "Cannot verify response includes pagination metadata in dry-run"
+        ],
+        "suggestions": [
+          "Confirm API returns pagination envelope: { data: [], total, page, limit }",
+          "Consider testing with limit=1 to verify single-item pagination"
+        ]
+      }
+    },
+    {
+      "id": "tc-011",
+      "name": "Delete existing user with admin token",
+      "endpoint": "/users/:id",
+      "method": "DELETE",
+      "category": "happy_path",
+      "description": "DELETE with valid admin token should return 204",
+      "expectedStatusCode": 204,
+      "expectedBehavior": "Returns empty 204 response",
+      "request": {
+        "headers": {
+          "Authorization": "Bearer admin-token-placeholder"
+        },
+        "pathParams": {
+          "id": "user-to-delete"
+        },
+        "request_body": null,
+        "query_params": null
+      },
+      "actualResponse": {
+        "skipped": true,
+        "durationMs": 0,
+        "actualUrl": "https://api.example.com/users/:id"
+      },
+      "verdict": {
+        "result": "fail",
+        "analysis": "Cannot verify delete operation in dry-run mode. A real admin token is needed.",
+        "issues": [
+          "Placeholder admin token will not work against real API"
+        ],
+        "suggestions": [
+          "Provide a real admin token via the authToken field when starting the run",
+          "Ensure the test user ID exists before the delete test runs"
+        ]
+      }
+    },
+    {
+      "id": "tc-012",
+      "name": "Get user with invalid ID format",
+      "endpoint": "/users/:id",
+      "method": "GET",
+      "category": "edge_case",
+      "description": "GET with non-numeric or malformed ID should return 400 or 404",
+      "expectedStatusCode": 400,
+      "expectedBehavior": "Returns error for invalid ID format",
+      "request": {
+        "headers": {},
+        "pathParams": {
+          "id": "../../etc/passwd"
+        },
+        "request_body": null,
+        "query_params": null
+      },
+      "actualResponse": {
+        "skipped": true,
+        "durationMs": 0,
+        "actualUrl": "https://api.example.com/users/:id"
+      },
+      "verdict": {
+        "result": "pass",
+        "analysis": "Path traversal attempt in ID field \u2014 good security-focused edge case. A well-implemented API should sanitize this.",
+        "issues": [],
+        "suggestions": [
+          "Verify the API sanitizes path parameters to prevent path traversal attacks"
+        ]
+      }
+    }
+  ],
+  "summary": "This dry-run test of the User Management API generated 12 comprehensive test cases covering happy paths, negative scenarios, edge cases, and authentication checks. Of the 12 tests analyzed, 8 passed the structural review, 3 were flagged as failures due to dry-run limitations (particularly around conflict detection and role-based access), and 1 received a warning regarding pagination response shape.\n\nThe primary recommendation for the development team is to run this test suite in live execution mode against a properly seeded test environment. Specifically: (1) Seed the database with at least one existing user to test conflict detection, (2) Create test users with different role levels (admin vs regular) and provide real JWT tokens, and (3) Confirm the pagination response envelope matches the expected format. The test suite structure is solid and will provide meaningful coverage once executed against the real API.",
+  "totalTokensUsed": 12450,
+  "tokensByStep": {
+    "step1": 1823,
+    "step2": 1644,
+    "step3": 4218,
+    "step5": 3891,
+    "step6": 874
+  }
+}
